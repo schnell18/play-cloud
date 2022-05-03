@@ -17,26 +17,22 @@ provider "aws" {
   region = "ap-northeast-1"
 }
 
-resource "aws_vpc" "main" {
-  cidr_block = "10.20.0.0/16"
-
+resource "aws_default_vpc" "default" {
   tags = {
-    Name = "main"
+    Name = "Default VPC"
   }
 }
 
-resource "aws_internet_gateway" "internet" {
-  vpc_id = aws_vpc.main.id
-
+resource "aws_default_subnet" "default" {
+  availability_zone = "ap-northeast-1c"
   tags = {
-    Name = "main"
+    Name = "Default subnet"
   }
 }
 
 resource "aws_security_group" "poincare" {
-  name = "poincare"
-  description = "Security configs for poincare App"
-  vpc_id   = aws_vpc.main.id
+  vpc_id = aws_default_vpc.default.id
+
   ingress {
     cidr_blocks  = ["0.0.0.0/0"]
     from_port    = 22
@@ -63,45 +59,13 @@ resource "aws_security_group" "poincare" {
 
 }
 
-resource "aws_subnet" "main" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.20.1.0/24"
-
-  tags = {
-    Name = "Main"
-  }
-}
-
-resource "aws_route_table" "internet" {
-  vpc_id = aws_vpc.main.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.internet.id
-  }
-}
-
-resource "aws_route_table_association" "a" {
-  subnet_id      = aws_subnet.main.id
-  route_table_id = aws_route_table.internet.id
-}
-
-resource "aws_network_interface" "foo" {
-  subnet_id   = aws_subnet.main.id
-  private_ips = ["10.20.1.100"]
-
-  tags = {
-    Name = "primary_network_interface"
-  }
-}
-
 resource "aws_instance" "poincare" {
   count = "${var.qty}"
 
   ami                         = "${var.ami}"
   instance_type               = "${var.instance["type"]}"
   key_name                    = "${var.key["name"]}"
-  subnet_id                   = aws_subnet.main.id
+  subnet_id                   = aws_default_subnet.default.id
   vpc_security_group_ids      = ["${aws_security_group.poincare.id}"]
   disable_api_termination     = false
   associate_public_ip_address = true
@@ -120,7 +84,7 @@ resource "aws_instance" "poincare" {
     volume_type = "gp3"
   }
 
-  depends_on = [ aws_key_pair.poincare, aws_internet_gateway.internet]
+  depends_on = [ aws_key_pair.poincare ]
 
   lifecycle {
     prevent_destroy = false
