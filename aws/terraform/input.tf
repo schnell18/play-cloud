@@ -3,27 +3,12 @@ variable "qty" {
   default = "1"
 }
 
-variable "ami" {
-  description = ""
-  # For ami-id to use, refer to: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/finding-an-ami.html#finding-quick-start-ami
-  default = "ami-0ac97798ccf296e02"
-}
-
 variable "instance" {
   description = ""
   default = {
     "type" = "t2.micro"
   }
 }
-
-variable "key" {
-  description = "OPS public key"
-  default = {
-    "name" = "opsbot"
-    "pub"  = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIFpaQ95wDzJoNeHaiwAXzS3M4GP6efFwYkBLZwH646R Cloud OPS"
-  }
-}
-
 
 variable "tags" {
   description = ""
@@ -34,3 +19,21 @@ variable "tags" {
     "role" = "backend"
   }
 }
+
+variable "vpc_cidr_block" {
+  description = "VPC CIDR block"
+  default = "10.30.0.0/16"
+}
+
+variable "subnet_cidr_block" {
+  description = "subnet CIDR block"
+  default     = "10.30.1.0/24"
+}
+
+# variable "subnet_cidr_blocks" {
+#   description = "subnet CIDR blocks"
+#   default     = {
+#     "backend" = "10.30.1.0/24"
+#     "mysql"   = "10.30.2.0/24"
+#   }
+# }
