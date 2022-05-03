@@ -86,7 +86,7 @@ resource "aws_route_table_association" "a" {
   route_table_id = aws_route_table.internet.id
 }
 
-resource "aws_network_interface" "foo" {
+resource "aws_network_interface" "eth0" {
   subnet_id   = aws_subnet.main.id
   private_ips = ["10.20.1.100"]
 
@@ -107,20 +107,16 @@ resource "aws_instance" "poincare" {
   associate_public_ip_address = true
   user_data                   = templatefile("./cloud-init.tpl", {})
 
-  tags = {
-    Name       = "${var.tags["name"]}"
-    App        = "${var.tags["app"]}"
-    Maintainer = "${var.tags["maintainer"]}"
-    Role       = "${var.tags["role"]}"
-  }
-
   root_block_device {
     # 30G is max-volume for free-tier
     volume_size = 30
     volume_type = "gp3"
   }
 
-  depends_on = [ aws_key_pair.poincare, aws_internet_gateway.internet]
+  network_interface {
+    network_interface_id = aws_network_interface.eth0.id
+    device_index         = 0
+  }
 
   lifecycle {
     prevent_destroy = false
@@ -131,8 +127,16 @@ resource "aws_instance" "poincare" {
     delete = "1h"
   }
 
-}
+  tags = {
+    Name       = "${var.tags["name"]}"
+    App        = "${var.tags["app"]}"
+    Maintainer = "${var.tags["maintainer"]}"
+    Role       = "${var.tags["role"]}"
+  }
 
+  depends_on = [ aws_key_pair.poincare, aws_internet_gateway.internet]
+
+}
 
 resource "aws_key_pair" "poincare" {
   key_name = "${var.key["name"]}"
