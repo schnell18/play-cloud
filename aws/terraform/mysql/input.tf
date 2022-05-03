@@ -2,6 +2,10 @@ variable "subnet_ids" {
   description = "subnet id" 
 }
 
+variable "security_group_id" {
+  description = "security group id" 
+}
+
 variable "database_name" {
   description = "Name of database to create"
 }

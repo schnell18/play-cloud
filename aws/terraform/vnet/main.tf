@@ -42,7 +42,7 @@ resource "aws_subnet" "mysql1a" {
   availability_zone = "ap-northeast-1a"
 
   tags = {
-    Name = "MySQL subnet az 1b"
+    Name = "MySQL subnet az 1a"
   }
 }
 
@@ -84,6 +84,30 @@ resource "aws_security_group" "main" {
 
 }
 
+resource "aws_security_group" "mysql" {
+  name = "mysql"
+  description = "Security configs for mysql"
+  vpc_id   = aws_vpc.main.id
+
+  ingress {
+    cidr_blocks  = ["10.30.0.0/16"]
+    from_port    = 3306
+    to_port      = 3306
+    protocol     = "tcp"
+    description  = "Open MySQL port to VPC"
+  }
+
+  egress {
+    from_port    = 0
+    to_port      = 0
+    protocol     = "-1"
+    cidr_blocks  = ["0.0.0.0/0"] 
+    description  = "allow all outgoing connections"
+  }
+
+}
+
+
 resource "aws_route_table" "internet" {
   vpc_id = aws_vpc.main.id
 
@@ -94,7 +118,7 @@ resource "aws_route_table" "internet" {
 }
 
 resource "aws_route_table_association" "a" {
-  subnet_id      = aws_subnet.main.id
+  subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.internet.id
 }
 

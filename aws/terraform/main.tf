@@ -27,13 +27,14 @@ module "jumper" {
   tags              = var.tags
   instance          = var.instance
   qty               = var.qty
-  subnet_id         = module.vnet.jumper_subnet_id
-  security_group_id = module.vnet.security_group_id
+  subnet_id         = module.vnet.public_subnet_id
+  security_group_id = module.vnet.main_security_group_id
 }
 
 module "mysql" {
-  source        = "./mysql"
-  admin_user    = "root"
-  database_name = "poincare"
-  subnet_ids    = [module.vnet.mysql_subnet_id_1a, module.vnet.mysql_subnet_id_1c]
+  source            = "./mysql"
+  admin_user        = "root"
+  database_name     = "poincare"
+  security_group_id = module.vnet.mysql_security_group_id
+  subnet_ids        = [module.vnet.mysql_subnet_id_1a, module.vnet.mysql_subnet_id_1c]
 }

@@ -24,17 +24,18 @@ resource "aws_db_subnet_group" "default" {
 }
 
 resource "aws_db_instance" "default" {
-  identifier           = random_pet.mysql.id
-  db_name              = "${var.database_name}"
-  username             = "${var.admin_user}"
-  allocated_storage    = "${var.storage_gb}"
-  multi_az             = "${var.multi_az}"
-  engine               = "mysql"
-  engine_version       = "${var.mysql_engine["version"]}"
-  parameter_group_name = "${var.mysql_engine["parameter_group"]}"
-  instance_class       = "db.t3.micro"
-  password             = random_password.password.result
-  skip_final_snapshot  = true
-  db_subnet_group_name = aws_db_subnet_group.default.name
+  identifier             = random_pet.mysql.id
+  db_name                = "${var.database_name}"
+  username               = "${var.admin_user}"
+  allocated_storage      = "${var.storage_gb}"
+  multi_az               = "${var.multi_az}"
+  engine                 = "mysql"
+  engine_version         = "${var.mysql_engine["version"]}"
+  parameter_group_name   = "${var.mysql_engine["parameter_group"]}"
+  instance_class         = "db.t3.micro"
+  password               = random_password.password.result
+  skip_final_snapshot    = true
+  db_subnet_group_name   = aws_db_subnet_group.default.name
+  vpc_security_group_ids = [ "${var.security_group_id}" ]
 }
 
