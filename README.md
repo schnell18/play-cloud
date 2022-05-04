@@ -28,7 +28,6 @@ within the VPC. The network topology diagram is as follows:
        |                +----------|     IGW      |       VPC 10.30.0.0/16 |
        |                |          +--------------+                        |
        |                |                                                  |
-       |                |                                                  |
        |   +-------------------------+      +------------------------+     |
        |   |  Internet facing subnet |      |   subnet 10.30.49.0/24 |     |
        |   |       10.30.2.0/24      |      |                        |     |
@@ -36,14 +35,10 @@ within the VPC. The network topology diagram is as follows:
        |   |      EC2 debian 10      |      |  |  subnet 10.30.50.0/24  |  |
        |   |                         |------|  |                        |  |
        |   |                         |      |  |                        |  |
-       |   |                         |      |  |                        |  |
        |   |                         |      |  |        MySQL 8.0.28    |  |
        |   |                         |      |  |                        |  |
        |   +-------------------------+      +--|                        |  |
-       |                                       |                        |  |
-       |                                       |                        |  |
        |                                       +------------------------+  |
-       |                                                                   |
        |                                                                   |
        +-------------------------------------------------------------------+
 
@@ -58,7 +53,7 @@ You need install softwares as follows:
 - [Ansible][2]
 
 You download the software and install manually. Or you can install with a
-pacakge manager.  On MacOS X, you may install Terraform by using brew as:
+pacakge manager. On MacOS X, you may install Terraform by using brew as:
 
     brew tap hashicorp/tap
     brew install hashicorp/tap/terraform
