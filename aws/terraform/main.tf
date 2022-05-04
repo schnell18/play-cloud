@@ -17,6 +17,7 @@ provider "aws" {
   region  = "ap-northeast-1"
 }
 
+# This module allocates VPC, subnets, route table and security groups
 module "vnet" {
   source         = "./vnet"
   vpc_cidr_block = "10.30.0.0/16"

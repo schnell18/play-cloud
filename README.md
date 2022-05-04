@@ -4,10 +4,51 @@ Simple cloud deployment automation for major public cloud using Terraform.
 
 ## Catalog
 
-| --- sub-folder --- | ------------- description ---------- |
+|     sub-folder     |               description            |
+| ------------------ | ------------------------------------ |
 | aws                | aws auto-provision                   |
 | azure              | Microsoft azure cloud auto-provision |
-| ------------------ | ------------------------------------ |
+
+## AWS
+
+This project provisions a free-tier EC2 host and a free-tier RDS MySQL db. The
+EC2 host runs debian 10 w/ 1C1G and 30G disk space. The RDS MySQL run MySQL
+8.0.28 w/ 2C1G and 20G storage space.
+
+The EC2 host is accessible from internet. The RDS MySQL can only be reached
+within the VPC. The network topology diagram is as follows:
+
+       +-------------------------------------------------------------------+
+       |                              Internet                             |
+       |                                                                   |
+       +---------------------------------|---------------------------------+
+                                         |
+       +---------------------------------|---------------------------------+
+       |                           +--------------+                        |
+       |                +----------|     IGW      |       VPC 10.30.0.0/16 |
+       |                |          +--------------+                        |
+       |                |                                                  |
+       |                |                                                  |
+       |   +-------------------------+      +------------------------+     |
+       |   |  Internet facing subnet |      |   subnet 10.30.49.0/24 |     |
+       |   |       10.30.2.0/24      |      |                        |     |
+       |   |                         |      |  +------------------------+  |
+       |   |      EC2 debian 10      |      |  |  subnet 10.30.50.0/24  |  |
+       |   |                         |------|  |                        |  |
+       |   |                         |      |  |                        |  |
+       |   |                         |      |  |                        |  |
+       |   |                         |      |  |        MySQL 8.0.28    |  |
+       |   |                         |      |  |                        |  |
+       |   +-------------------------+      +--|                        |  |
+       |                                       |                        |  |
+       |                                       |                        |  |
+       |                                       +------------------------+  |
+       |                                                                   |
+       |                                                                   |
+       +-------------------------------------------------------------------+
+
+The project demonstrates how easy it takes to provision infrastructure w/
+terraform in just a few mintues.
 
 ## Pre-requisite
 
